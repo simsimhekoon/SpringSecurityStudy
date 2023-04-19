@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
                 .and()
             .formLogin()
-                .loginPage("/loginFrom")
+                .loginPage("/loginForm")
                 .loginProcessingUrl("/login") // login주소가 호출되면 시큐리티가 낚아챔. -> controller에 매핑안해도됨.
                 .defaultSuccessUrl("/"); //로그인 완료 후, 리다이렉트
         return http.build();
