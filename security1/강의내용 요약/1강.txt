@@ -1,0 +1,40 @@
+1강.
+실습 환경 구성하기
+
+* 강의와 다른점
+- Mustech가 아닌 thymeleaf를 사용.
+
+
+
+1-1. 실습을 위한 DB 생성
+환경 : MySQL
+아래 sql입력
+create user 'cos"@'%' identified by 'cos1234';
+GRANT ALL PRIVILEGES ON *.* TO 'cos'@'%';
+create database security;
+
+각각
+유저생성
+권한부여
+DB생성의 역할을 한다.
+
+
+
+1-2. 스프링 부트 프로젝트 생성
+spring initializr을 이용
+dependencies
+- Spring Boot DevTools
+- Lombok
+- Spring Data JPA
+- MySQL Driver
+- Spring Security
+- Thymeleaf
+- Spring Web
+
+
+
+1-3. 기타 설정
+- main/resources/ 에 application.yml 생성. 내용은 코드 참조.
+  -> 각종 설정
+- main/java/com/cos/security1/ 에 controller패키지 생성, 안에 indexController 생성.
+  -> 가장 처음 기본화면 컨트롤러.(localhost:8080/)
