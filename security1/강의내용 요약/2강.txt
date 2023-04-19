@@ -1,0 +1,56 @@
+2강.
+Spring security 설정
+
+* 강의와 다른점
+- 기존 강의에서는 WebSecurityConfigurerAdapter를 상속하여 SecurityConfig를 구현했지만,
+  WebSecurityConfigurerAdapter는 deprecated 됐기 때문에 더이상 사용하지 못한다.
+
+  때문에 기존에는(강의에서는) Web(이하생략)을 상속받고 protected void configure(HttpSecurity http) 메소드를 오버라이딩 하였지만
+  현재는 SecurityFilterChain filterChain(HttpSecurity http) 매소드를 @Bean에 등록하여 사용한다.
+
+  추가로, 최신버전으로 오면서 .andMatchers()라는 메소드 대신 .requestMatcher()라는 메소드를 사용하며,
+  .access("hasRole('ROLE_ADMIN')")과 같은 형태로 작성하던 메소드는 .hasRole("ROLE_ADMIN")과 같이 hasRole자체가 메소드가 되어 사용된다.
+
+
+
+1. 매핑 생성
+index controller에 각 기본적인 매핑 생성.
+user, manager, admin, login, join, joinProc를 생성함.(코드 참조)
+
+
+
+2. 실행해서 매핑이 잘 되나 확인해 보는데?
+localhost:8080에 접속해보면 의문의 login from이 나온다.
+->spring security가 제공하는 기본 로그인 화면.
+
+/user, /manager, /admin 등 다 잘 작동하지만, /login은 스프링 시큐리티가 낚아채서 기본 로그인 화면을 뿌려버린다.
+
+
+
+3. Security 설정
+main/java/com/cos/security1/에 config패키지를 생성하고 SecurityConfig를 생성.
+
+내용은 코드 참조.
+
+- filterChain(HttpSecurity http) 메소드란 'HttpSecurity'객체를 파라미터로 받아 'SecurityFilterChain' 객체를 반환한다.
+  http 파라미터는 HttpSecurity 객체로, 보안 구성을 위한 메소드들을 제공한다.
+  이 메소드들을 사용하여 인증, 권한 부여, 로그인 페이지 설정 등 보안 관련 설정을 할 수 있다.
+  filterChain(HttpSecurity http) 메소드는 이런 보안 설정을 기반으로 보안 필터 체인을 구성하며, 이를 SecurityFilterChain 객체로 반환하는 것이다.
+
+- http.csrf()란 CSRF(Cross-Site Request Forgery) 보호 기능을 활성화하는 메소드이며 코드에서는 .disable()로 비활성화 해주었다.
+
+- .requestMatcher()란 말 그대로 요청을 매치시켜주는 메소드이다. 즉, .requestMatchers("/user/**")이것은 /user/로 들어오는 모든 요청을 뜻한다.
+
+- .authenticated()란 인증된 사용자만 접근할 수 있도록 요청을 제한하는 역할을 한다.
+
+- .hasRole()란 특정 권한을 가진 사용자만 접근할 수 있도록 요청을 제한하는 역할을 한다. 코드에서는 .hasAnyRole()을 사용하였다.(한번에 여러개)
+
+- .anyRequest().permitAll() 이부분은 기타 나머지 요청은 모두 허가하겠다는 뜻이다.
+
+spring security를 설정하면 '/login'을 요청할때 스프링 시큐리티 기본 로그인 화면으로 낚아채는 기능이 비활성화 된다.
+
+  .formLogin()
+     .loginPage("/login")
+     .loginProcessingUrl("/login") // login주소가 호출되면 시큐리티가 낚아챔. -> controller에 매핑안해도됨.
+     .defaultSuccessUrl("/"); //로그인 완료 후, 리다이렉트
+
