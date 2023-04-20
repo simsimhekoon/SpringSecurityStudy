@@ -27,7 +27,10 @@ public class SecurityConfig {
             .formLogin()
                 .loginPage("/loginForm")
                 .loginProcessingUrl("/login") // login주소가 호출되면 시큐리티가 낚아챔. -> controller에 매핑안해도됨.
-                .defaultSuccessUrl("/"); //로그인 완료 후, 리다이렉트
+                .defaultSuccessUrl("/") //로그인 완료 후, 리다이렉트
+                .and()
+            .oauth2Login()
+                .loginPage("/loginForm"); //구글 로그인이 완료된후에 후처리가 필요.
         return http.build();
     }
 }

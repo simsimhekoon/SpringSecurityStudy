@@ -1,0 +1,40 @@
+6강.
+구글 로그인 구현
+
+*강의와 다른점
+maven이 아닌 gradle 환경이기 때문에
+oauth2-client를 추가하는 방법이 약간 다르다.
+디펜던시를 추가한다는 점에선 결국 같음
+
+
+1.
+구글 cloud api 콘솔에서 설정
+프로젝트를 하나 만들고
+사용자 인증 정보에서 클라이언트 아이디를 하나 만드는데,
+승인된 리다이렉션 URI는 OAuth2 Client 라이브러리를 사용하고자 한다면
+오리진 주소 뒤에 /login/oauth2/code/ 이 부분은 필수로 들어가야 한다.
+승인된 리다이렉션이란, 로그인이 승인된 후 토큰을 넘겨받는 주소이다.
+OAuth2 Client 라이브러리를 사용하면 위의 주소로 응답을 낚아채주기 때문에
+따로 Controller에서 매핑을 구현해줄 필요가 없다.
+
+
+2.
+build.gradle에서 oauth2-client를 추가한다.
+-> implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
+
+
+3.
+application.yml에 security 관련 내용 추가
+상세 내용은 코드 참조.
+
+이후 프론트에서 요청을 보낼때도 아까 고정이라고 했던 주소로 보내야 함.(oauth2 인증방식 로그인을 하려는 경우)
+
+
+4.
+고정이라고 했던 주소로 요청을 보내면 404가 뜸. -> 연결을 해주지 않았기 때문
+SecurityConfig에 아래의 내용 추가.
+.and()
+.oauth2Login()
+.loginPage("/loginForm");
+이후 로그인을 하면 403이 뜨는데, 세션이 없기 때문임.
+->즉, 인증이 되고 나서 서버에서 후처리를 안했기 때문.
