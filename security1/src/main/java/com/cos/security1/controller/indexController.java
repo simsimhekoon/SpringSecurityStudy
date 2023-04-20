@@ -4,6 +4,8 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +57,7 @@ public class indexController {
     @PostMapping("/join")
     public String join(User user) {
         System.out.println(user);
-        user.setRole("USER");
+        user.setRole("ROLE_USER");
 
         String rawPassword = user.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
@@ -63,5 +65,17 @@ public class indexController {
 
         userRepository.save(user); // -> 비밀번호가 암호화되지 않아서 security로 로그인 할 수 없음.
         return "redirect:/loginForm";
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/info")
+    public @ResponseBody String info() {
+        return "개인정보";
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/data")
+    public @ResponseBody String data() {
+        return "데이터 정보";
     }
 }

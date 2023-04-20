@@ -2,11 +2,13 @@ package com.cos.security1.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder encodePwd() {
@@ -19,7 +21,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers("/user/**").authenticated()
                 .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/amdin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
             .formLogin()

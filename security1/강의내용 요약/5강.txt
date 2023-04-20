@@ -1,0 +1,39 @@
+5강.
+시큐리티 권한 처리(인가)
+
+*강의와 다른점
+@EnableGlobalMethodSecurity 어노테이션이 deprecated되었음.
+현대는 @EnableMethodSecurity를 사용해야 한다고 함.
+
+1.
+DB에서 유저에게 권한을 주었을 경우("ROLE_ADMIN" 등) 제대로 처리가 되는지 확인
+
+config의 hasRoll()안의 매개변수는 ADMIN/MANAGER등으로 쓰고 DB에 저장된 역할은 "ROLE_ADMIN"처럼 앞에 ROLE_ 가 붙어야 정상 작동한다.
+
+2.
+SecurityConfig에 메소드 보안을 활성화.
+사용법은 코드 참조.
+
+@EnableMethodSecurity 어노테이션을 SecurityConfig에 추가.
+-> 메소드 호출에 대한 보안을 구현하기 위해 메소드 수준 보안을 지원하는 역할.
+
+securedEnabled = true
+-> @Secured 어노테이션 활성화.(컨트롤러에서 메소드에 붙여 사용)
+   메소드 보안을 구현할 때 @Secured 어노테이션을 사용하여 보안을 설정할 수 있도록 지정하는 옵션.
+   메소드 호출 전에 인증된 사용자가 지정된 역할(Role)을 가지고 있는지 확인하는데 사용됨.
+
+
+prePostEnabled = true
+-> @PreAuthorize 어노테이션 활성화.
+   위의 securedEnabled 옵션과 비슷한 역할을 한다.
+   둘의 차이점은 다음과 같은 것들이 있다.
+   - @Secured 어노테이션은 메소드 호출 전에 보안 역할(Role)이 검증되고, @PreAuthorize 어노테이션은 메소드 호출 전에 표현식(Expression)이 평가된다
+   - @Secured 어노테이션은 하나 이상의 보안 역할(Role)을 사용하여 메소드 호출에 대한 보안을 설정한다.
+     반면에, @PreAuthorize 어노테이션은 SpEL(Spring Expression Language)을 사용하여 보안 조건을 설정한다.
+     이를 통해 더 복잡한 보안 검사를 수행할 수 있다.
+   - @Secured 어노테이션은 클래스 레벨 및 메소드 레벨에서 사용할 수 있다.
+     반면에, @PreAuthorize 어노테이션은 메소드 레벨에서만 사용할 수 있다.
+   - @Secured 어노테이션은 보안 역할(Role)을 문자열로 전달한다.
+     반면에, @PreAuthorize 어노테이션은 SpEL(Spring Expression Language)을 사용하여 보안 조건을 설정한다
+
+
